@@ -54,7 +54,6 @@
 
 
 
-SRCS += src/hb-blob.cc
 SRCS += src/hb-buffer-serialize.cc
 SRCS += src/hb-buffer.cc
 SRCS += src/hb-common.cc
@@ -86,6 +85,9 @@ SRCS += src/hb-ot-shape-complex-use-table.cc
 SRCS += src/hb-ot-shape-normalize.cc
 SRCS += src/hb-ot-shape-fallback.cc
 SRCS += src/hb-ot-var.cc
+
+# error
+SRCS += src/hb-blob.cc
 SRCS += src/hb-icu.cc
 
 OBJS := ${SRCS:.cc=.o} 
@@ -122,4 +124,9 @@ CFLAGS += -DHAVE_ICU_BUILTIN
 
 libharfbuzz.a: $(OBJS)
 	echo $(OBJS)
+
+.PHONY: clean
+clean:
+	-rm -f $(OBJS)
+
 
