@@ -43,9 +43,11 @@
 #include <stdio.h>
 #include <errno.h>
 #include <stdlib.h>
+#ifndef __CC_ARM
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#endif
 
 
 
