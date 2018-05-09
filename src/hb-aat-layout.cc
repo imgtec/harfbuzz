@@ -52,7 +52,7 @@ _get_ankr (hb_face_t *face, hb_blob_t **blob = nullptr)
   {
     if (blob)
       *blob = hb_blob_get_empty ();
-    return OT::Null(AAT::ankr);
+    return Null(AAT::ankr);
   }
   hb_ot_layout_t * layout = hb_ot_layout_from_face (face);
   const AAT::ankr& ankr = *(layout->ankr.get ());
@@ -68,7 +68,7 @@ _get_kerx (hb_face_t *face, hb_blob_t **blob = nullptr)
   {
     if (blob)
       *blob = hb_blob_get_empty ();
-    return OT::Null(AAT::kerx);
+    return Null(AAT::kerx);
   }
   hb_ot_layout_t * layout = hb_ot_layout_from_face (face);
   /* XXX this doesn't call set_num_glyphs on sanitizer. */
@@ -85,7 +85,7 @@ _get_morx (hb_face_t *face, hb_blob_t **blob = nullptr)
   {
     if (blob)
       *blob = hb_blob_get_empty ();
-    return OT::Null(AAT::morx);
+    return Null(AAT::morx);
   }
   hb_ot_layout_t * layout = hb_ot_layout_from_face (face);
   /* XXX this doesn't call set_num_glyphs on sanitizer. */
@@ -102,7 +102,7 @@ _get_trak (hb_face_t *face, hb_blob_t **blob = nullptr)
   {
     if (blob)
       *blob = hb_blob_get_empty ();
-    return OT::Null(AAT::trak);
+    return Null(AAT::trak);
   }
   hb_ot_layout_t * layout = hb_ot_layout_from_face (face);
   const AAT::trak& trak = *(layout->trak.get ());
@@ -118,11 +118,11 @@ _get_trak (hb_face_t *face, hb_blob_t **blob = nullptr)
 //   OT::Sanitizer<AAT::morx> sanitizer;
 //   sanitizer.set_num_glyphs (face->get_num_glyphs ());
 //   hb_blob_t *morx_blob = sanitizer.sanitize (face->reference_table (HB_AAT_TAG_morx));
-//   OT::Sanitizer<AAT::morx>::lock_instance (morx_blob);
+//   morx_blob->as<AAT::morx> ();
 
 //   if (0)
 //   {
-//     OT::Sanitizer<AAT::Lookup<OT::GlyphID> >::lock_instance (morx_blob)->get_value (1, face->get_num_glyphs ());
+//     morx_blob->as<AAT::Lookup<OT::GlyphID> > ()->get_value (1, face->get_num_glyphs ());
 //   }
 // }
 
