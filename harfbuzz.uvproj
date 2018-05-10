@@ -374,7 +374,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls>--arm</MiscControls>
-              <Define>HB_NO_MT HAVE_OT HAVE_ICU HAVE_ICU_BUILTIN</Define>
+              <Define>HB_NO_MT HB_NO_UNICODE_FUNCS HAVE_OT</Define>
               <Undefine></Undefine>
               <IncludePath>.\src</IncludePath>
             </VariousControls>
@@ -579,11 +579,6 @@
               <FileName>hb-blob.cc</FileName>
               <FileType>8</FileType>
               <FilePath>.\src\hb-blob.cc</FilePath>
-            </File>
-            <File>
-              <FileName>hb-icu.cc</FileName>
-              <FileType>8</FileType>
-              <FilePath>.\src\hb-icu.cc</FilePath>
             </File>
           </Files>
         </Group>
