@@ -88,7 +88,7 @@ SRCS += src/hb-ot-var.cc
 
 # error
 SRCS += src/hb-blob.cc
-SRCS += src/hb-icu.cc
+#SRCS += src/hb-icu.cc
 
 OBJS := ${SRCS:.cc=.o} 
 
@@ -112,18 +112,19 @@ CFLAGS += $(CFLAGS1)
 CFLAGS += -Isrc
 
 CFLAGS += -DHB_NO_MT
+CFLAGS += -DHB_NO_UNICODE_FUNCS
 CFLAGS += -DHAVE_OT
-CFLAGS += -DHAVE_ICU
-CFLAGS += -DHAVE_ICU_BUILTIN
-# CFLAGS += -Werror
-# CFLAGS += -Wno-unused-parameter
-# CFLAGS += -Wno-missing-field-initializers
+#CFLAGS += -DHAVE_ICU
+#CFLAGS += -DHAVE_ICU_BUILTIN
+#CFLAGS += -Werror
+#CFLAGS += -Wno-unused-parameter
+#CFLAGS += -Wno-missing-field-initializers
 
 %.o: %.cc
 	armcc $(CFLAGS) -c $< -o $@
 
 libharfbuzz.a: $(OBJS)
-	echo $(OBJS)
+	armar -r  $@ $^
 
 .PHONY: clean
 clean:

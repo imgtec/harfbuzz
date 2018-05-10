@@ -543,6 +543,9 @@ _hb_mapped_file_destroy (hb_mapped_file_t *file)
 hb_blob_t *
 hb_blob_create_from_file (const char *file_name)
 {
+#ifdef __CC_ARM
+  return hb_blob_get_empty ();
+#else
   // Adopted from glib's gmappedfile.c with Matthias Clasen and
   // Allison Lortie permission but changed to suit our need.
   bool writable = false;
@@ -596,4 +599,5 @@ fail:
   close (fd);
   free (file);
   return hb_blob_get_empty ();
+#endif
 }
