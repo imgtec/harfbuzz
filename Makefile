@@ -101,7 +101,8 @@ LIBS += liblog
 
 CFLAGS1 += --cpu CORTEX-R4F
 CFLAGS1 += --arm --li --apcs=interwork --split_sections
-CFLAGS1 += -W
+#CFLAGS1 += -W
+CFLAGS1 += --diag_suppress=177,550,940,111,68,61,1293,368
 CFLAGS1 += --gnu
 # CFLAGS1 += --c99
 
