@@ -44,11 +44,6 @@
 #include "hb-ot-post-table.hh"
 
 
-#if !defined(HB_NO_VISIBILITY) && !defined(HB_SUBSET_BUILTIN)
-const void * const _hb_NullPool[HB_NULL_POOL_SIZE / sizeof (void *)] = {};
-#endif
-
-
 struct hb_subset_profile_t {
   hb_object_header_t header;
   ASSERT_POD ();
@@ -132,6 +127,8 @@ _hb_subset_face_data_create (void)
   hb_subset_face_data_t *data = (hb_subset_face_data_t *) calloc (1, sizeof (hb_subset_face_data_t));
   if (unlikely (!data))
     return nullptr;
+
+  data->tables.init ();
 
   return data;
 }
@@ -219,13 +216,11 @@ hb_subset_face_create (void)
 hb_bool_t
 hb_subset_face_add_table (hb_face_t *face, hb_tag_t tag, hb_blob_t *blob)
 {
-  if (unlikely (face->destroy != _hb_subset_face_data_destroy))
+  if (unlikely (face->destroy != (hb_destroy_func_t) _hb_subset_face_data_destroy))
     return false;
 
   hb_subset_face_data_t *data = (hb_subset_face_data_t *) face->user_data;
   hb_subset_face_data_t::table_entry_t *entry = data->tables.push ();
-  if (unlikely (!entry))
-    return false;
 
   entry->tag = tag;
   entry->blob = hb_blob_reference (blob);
@@ -281,7 +276,7 @@ _subset_table (hb_subset_plan_t *plan,
     default:
       hb_blob_t *source_table = hb_face_reference_table(plan->source, tag);
       if (likely (source_table))
-        result = hb_subset_plan_add_table(plan, tag, source_table);
+        result = plan->add_table(tag, source_table);
       else
         result = false;
       hb_blob_destroy (source_table);
@@ -302,10 +297,11 @@ _should_drop_table(hb_subset_plan_t *plan, hb_tag_t tag)
     case HB_TAG ('h', 'd', 'm', 'x'): /* hint table, fallthrough */
     case HB_TAG ('V', 'D', 'M', 'X'): /* hint table, fallthrough */
       return plan->drop_hints;
-    // Drop Layout Tables until subsetting is supported.
+    // Drop Layout Tables if requested.
     case HB_TAG ('G', 'D', 'E', 'F'): /* temporary */
     case HB_TAG ('G', 'P', 'O', 'S'): /* temporary */
     case HB_TAG ('G', 'S', 'U', 'B'): /* temporary */
+      return plan->drop_ot_layout;
     // Drop these tables below by default, list pulled
     // from fontTools:
     case HB_TAG ('B', 'A', 'S', 'E'):

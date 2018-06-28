@@ -685,6 +685,7 @@ struct Tag : HBUINT32
   public:
   DEFINE_SIZE_STATIC (4);
 };
+DEFINE_NULL_DATA (OT, Tag, "    ");
 
 /* Glyph index number, same as uint16 (length = 16 bits) */
 typedef HBUINT16 GlyphID;
@@ -696,6 +697,7 @@ typedef HBUINT16 NameID;
 struct Index : HBUINT16 {
   static const unsigned int NOT_FOUND_INDEX = 0xFFFFu;
 };
+DEFINE_NULL_DATA (OT, Index, "\xff\xff");
 
 /* Offset, Null offset = 0 */
 template <typename Type>
@@ -777,6 +779,12 @@ struct OffsetTo : Offset<OffsetType>
   {
     unsigned int offset = *this;
     if (unlikely (!offset)) return Null(Type);
+    return StructAtOffset<const Type> (base, offset);
+  }
+  inline Type& operator () (void *base) const
+  {
+    unsigned int offset = *this;
+    if (unlikely (!offset)) return Crap(Type);
     return StructAtOffset<Type> (base, offset);
   }
 
@@ -930,6 +938,7 @@ struct ArrayOf
   }
   inline Type& operator [] (unsigned int i)
   {
+    if (unlikely (i >= len)) return Crap(Type);
     return arrayZ[i];
   }
   inline unsigned int get_size (void) const
@@ -1038,6 +1047,11 @@ struct OffsetListOf : OffsetArrayOf<Type>
     if (unlikely (i >= this->len)) return Null(Type);
     return this+this->arrayZ[i];
   }
+  inline const Type& operator [] (unsigned int i)
+  {
+    if (unlikely (i >= this->len)) return Crap(Type);
+    return this+this->arrayZ[i];
+  }
 
   inline bool sanitize (hb_sanitize_context_t *c) const
   {
@@ -1060,6 +1074,11 @@ struct HeadlessArrayOf
   inline const Type& operator [] (unsigned int i) const
   {
     if (unlikely (i >= len || !i)) return Null(Type);
+    return arrayZ[i-1];
+  }
+  inline Type& operator [] (unsigned int i)
+  {
+    if (unlikely (i >= len || !i)) return Crap(Type);
     return arrayZ[i-1];
   }
   inline unsigned int get_size (void) const
